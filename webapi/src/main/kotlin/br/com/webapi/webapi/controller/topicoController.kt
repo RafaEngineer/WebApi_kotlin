@@ -1,26 +1,26 @@
 package br.com.webapi.webapi.controller
 
-import br.com.webapi.webapi.model.Curso
-import br.com.webapi.webapi.model.Topico
-import br.com.webapi.webapi.model.Usuario
+import br.com.webapi.webapi.dto.NovoTopicoForm
+import br.com.webapi.webapi.dto.TopicoView
 import br.com.webapi.webapi.service.TopicoService
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import java.util.*
-import java.util.Arrays.asList
+import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/topicos")
 class topicoController (private val service: TopicoService) {
 
     @GetMapping
-    fun listar(): List<Topico>{
+    fun listar(): List<TopicoView>{
         return service.listar()
     }
     @GetMapping("/{id}")
-    fun buscarPorId(@PathVariable id: Long): Topico{
+    fun buscarPorId(@PathVariable id: Long): TopicoView {
         return service.buscarPorId(id)
     }
+    @PostMapping
+    fun cadastrar(@RequestBody @Valid dto: NovoTopicoForm){
+        service.cadastrar(dto)
+        }
+
 }

@@ -3,7 +3,7 @@ package br.com.webapi.webapi.model
 import java.time.LocalDateTime
 
 data class Resposta (
-        val id: Long,
+        val id: Long? = null,
         val mensagem: String,
         val dataCriacao: LocalDateTime = LocalDateTime.now(),
         val autor: Usuario,

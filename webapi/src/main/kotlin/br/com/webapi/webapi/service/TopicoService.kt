@@ -1,69 +1,37 @@
 package br.com.webapi.webapi.service
 
-import br.com.webapi.webapi.model.Curso
+import br.com.webapi.webapi.dto.NovoTopicoForm
+import br.com.webapi.webapi.dto.TopicoView
+import br.com.webapi.webapi.mapper.TopicoFormMapper
+import br.com.webapi.webapi.mapper.TopicoViewMapper
 import br.com.webapi.webapi.model.Topico
-import br.com.webapi.webapi.model.Usuario
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.stream.Collectors
+import kotlin.collections.ArrayList
+import kotlin.collections.plus as plus
 
 @Service
-class TopicoService (private var topicos: List<Topico>) {
+class TopicoService (
+        private var topicos: List<Topico> = ArrayList(),
+       // private val cursoService: CursoService,
+       // private val usuarioService: UsuarioService,
+        private val topicoViewMapper: TopicoViewMapper,
+        private val topicoFormMapper: TopicoFormMapper
+        ) {
 
-    init{
-        val topico = Topico(
-                id =1,
-                titulo = "Duvida Kotlin",
-                mensagem = "Variaveis no Kotlin",
-                curso = Curso(
-                        id = 1,
-                        nome = "String",
-                        categoria = "Programação"
-                ),
-                autor = Usuario(
-                        id =1,
-                        nome = "Ana da Silva",
-                        email = "ana@gmail.com"
-                )
-        )
-        val topico2 = Topico(
-                id =2,
-                titulo = "Duvida Kotlin",
-                mensagem = "Variaveis no Kotlin2",
-                curso = Curso(
-                    id = 2,
-                    nome = "String",
-                    categoria = "Programação"
-            ),
-                autor = Usuario(
-                    id =2,
-                    nome = "Ana da Silva",
-                    email = "ana@gmail.com"
-            ),
-        )
-        val topico3 = Topico(
-                id =3,
-                titulo = "Duvida Kotlin",
-                mensagem = "Variaveis no Kotlin2",
-                curso = Curso(
-                        id = 3,
-                        nome = "String",
-                        categoria = "Programação"
-                ),
-                autor = Usuario(
-                        id =3,
-                        nome = "Ana da Silva",
-                        email = "ana@gmail.com"
-                ),
-        )
-        topicos = Arrays.asList(topico, topico2, topico3)
+    fun listar(): List<TopicoView> {
+        return topicos.stream().map{
+            t -> topicoViewMapper.map(t)
+        }.collect(Collectors.toList())
     }
-    fun listar(): List<Topico> {
-
-        return topicos
+    fun buscarPorId(id: Long): TopicoView {
+        val topico = topicos.stream().filter({t -> t.id == id}).findFirst().get()
+        return topicoViewMapper.map(topico)
     }
 
-    fun buscarPorId(id: Long): Topico {
-        return topicos.stream().filter({t -> t.id == id}).findFirst().get()
+    fun cadastrar(form: NovoTopicoForm) {
+        val topico = topicoFormMapper.map(form)
+        topico.id = topicos.size.toLong() +1
+        topicos = topicos.plus(topico)
     }
-
 }
