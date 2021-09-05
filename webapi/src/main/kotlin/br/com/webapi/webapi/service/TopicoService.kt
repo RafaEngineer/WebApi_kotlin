@@ -3,6 +3,7 @@ package br.com.webapi.webapi.service
 import br.com.webapi.webapi.dto.AtualizacaoTopicoForm
 import br.com.webapi.webapi.dto.NovoTopicoForm
 import br.com.webapi.webapi.dto.TopicoView
+import br.com.webapi.webapi.exception.NotFoundException
 import br.com.webapi.webapi.mapper.TopicoFormMapper
 import br.com.webapi.webapi.mapper.TopicoViewMapper
 import br.com.webapi.webapi.model.Topico
@@ -20,7 +21,8 @@ class TopicoService (
        // private val cursoService: CursoService,
        // private val usuarioService: UsuarioService,
         private val topicoViewMapper: TopicoViewMapper,
-        private val topicoFormMapper: TopicoFormMapper
+        private val topicoFormMapper: TopicoFormMapper,
+        private val notFoundMessage: String = "Topico não encontrado!"
         ) {
 
     fun listar(): List<TopicoView> {
@@ -29,7 +31,7 @@ class TopicoService (
         }.collect(Collectors.toList())
     }
     fun buscarPorId(id: Long): TopicoView {
-        val topico = topicos.stream().filter({t -> t.id == id}).findFirst().get()
+        val topico = topicos.stream().filter({t -> t.id == id}).findFirst().orElseThrow{NotFoundException(notFoundMessage)}
         return topicoViewMapper.map(topico)
     }
 
@@ -44,7 +46,7 @@ class TopicoService (
     fun atualizar(@RequestBody @Valid form: AtualizacaoTopicoForm): TopicoView{
         val topico = topicos.stream().filter { t ->
             t.id == form.id
-        }.findFirst().get()
+        }.findFirst().orElseThrow{NotFoundException(notFoundMessage)}
         val topicoAtualizado = Topico(
                 id = form.id,
                 titulo = form.titulo,
@@ -62,7 +64,7 @@ class TopicoService (
     fun deletar(id: Long) {
         val topico = topicos.stream().filter { t ->
             t.id == id
-        }.findFirst().get()
+        }.findFirst().orElseThrow{NotFoundException(notFoundMessage)}
         topicos = topicos.minus(topico)
     }
 }
