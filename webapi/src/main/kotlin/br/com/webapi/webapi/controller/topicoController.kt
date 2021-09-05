@@ -1,5 +1,6 @@
 package br.com.webapi.webapi.controller
 
+import br.com.webapi.webapi.dto.AtualizacaoTopicoForm
 import br.com.webapi.webapi.dto.NovoTopicoForm
 import br.com.webapi.webapi.dto.TopicoView
 import br.com.webapi.webapi.service.TopicoService
@@ -22,5 +23,9 @@ class topicoController (private val service: TopicoService) {
     fun cadastrar(@RequestBody @Valid dto: NovoTopicoForm){
         service.cadastrar(dto)
         }
-
+    @PutMapping
+    fun atualizar(@RequestBody @Valid form: AtualizacaoTopicoForm){
+        service.atualizar(form)
+    }
+   
 }
