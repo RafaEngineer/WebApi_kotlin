@@ -30,7 +30,7 @@ class topicoController (private val service: TopicoService) {
         val topicoView = service.cadastrar(form)
         val uri =  uriBuilder.path("/topicos/${topicoView.id}").build().toUri()
         return ResponseEntity.created(uri).body(topicoView)
-        }
+    }
     @PutMapping
     @Transactional
     fun atualizar(@RequestBody @Valid form: AtualizacaoTopicoForm): ResponseEntity<TopicoView>{
