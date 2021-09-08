@@ -2,6 +2,7 @@ package br.com.webapi.webapi.controller
 
 import br.com.webapi.webapi.dto.AtualizacaoTopicoForm
 import br.com.webapi.webapi.dto.NovoTopicoForm
+import br.com.webapi.webapi.dto.TopicoPorCategoriaDto
 import br.com.webapi.webapi.dto.TopicoView
 import br.com.webapi.webapi.service.TopicoService
 import org.springframework.cache.annotation.CacheEvict
@@ -55,6 +56,9 @@ class topicoController (private val service: TopicoService) {
     @CacheEvict(value = ["topicos"], allEntries = true)
     fun deletar(@PathVariable id: Long){
         service.deletar(id)
-
+    }
+    @GetMapping("/relatorio")
+    fun relatorio(): List<TopicoPorCategoriaDto>{
+        return service.relatorio()
     }
 }

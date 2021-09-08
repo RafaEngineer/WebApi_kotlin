@@ -2,6 +2,7 @@ package br.com.webapi.webapi.service
 
 import br.com.webapi.webapi.dto.AtualizacaoTopicoForm
 import br.com.webapi.webapi.dto.NovoTopicoForm
+import br.com.webapi.webapi.dto.TopicoPorCategoriaDto
 import br.com.webapi.webapi.dto.TopicoView
 import br.com.webapi.webapi.exception.NotFoundException
 import br.com.webapi.webapi.mapper.TopicoFormMapper
@@ -65,5 +66,9 @@ class TopicoService (
 
     fun deletar(id: Long) {
         repository.deleteById(id)
+    }
+
+    fun relatorio(): List<TopicoPorCategoriaDto>{
+        return repository.relatorio()
     }
 }
