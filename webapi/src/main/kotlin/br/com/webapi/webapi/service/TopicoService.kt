@@ -8,10 +8,14 @@ import br.com.webapi.webapi.mapper.TopicoFormMapper
 import br.com.webapi.webapi.mapper.TopicoViewMapper
 import br.com.webapi.webapi.model.Topico
 import br.com.webapi.webapi.repository.TopicoRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.AbstractPersistable_.id
+import org.springframework.data.web.PageableDefault
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 import java.util.stream.Collectors
 import javax.validation.Valid
 import kotlin.collections.ArrayList
@@ -25,10 +29,19 @@ class TopicoService (
         private val notFoundMessage: String = "Topico não encontrado!"
 ) {
 
-    fun listar(): List<TopicoView> {
-        return repository.findAll().stream().map{
-            t -> topicoViewMapper.map(t)
-        }.collect(Collectors.toList())
+    fun listar(
+            nomeCurso: String?,
+            paginacao: Pageable
+    ): Page<TopicoView> {
+        val topicos = if (nomeCurso == null){
+            repository.findAll(paginacao)
+        }else {
+            repository.findByCursoNome(nomeCurso, paginacao)
+        }
+            return topicos.map { t ->
+                topicoViewMapper.map(t)
+            }
+
     }
     fun buscarPorId(id: Long): TopicoView {
         val topico = repository.findById(id).orElseThrow{NotFoundException(notFoundMessage)}

@@ -4,6 +4,10 @@ import br.com.webapi.webapi.dto.AtualizacaoTopicoForm
 import br.com.webapi.webapi.dto.NovoTopicoForm
 import br.com.webapi.webapi.dto.TopicoView
 import br.com.webapi.webapi.service.TopicoService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -17,8 +21,11 @@ import javax.validation.Valid
 class topicoController (private val service: TopicoService) {
 
     @GetMapping
-    fun listar(): List<TopicoView>{
-        return service.listar()
+    fun listar(
+            @RequestParam(required = false) nomeCurso: String?,
+            @PageableDefault(size = 5, sort = ["dataCriacao"], direction = Sort.Direction.DESC) paginacao: Pageable
+    ): Page<TopicoView> {
+        return service.listar(nomeCurso, paginacao)
     }
     @GetMapping("/{id}")
     fun buscarPorId(@PathVariable id: Long): TopicoView {
